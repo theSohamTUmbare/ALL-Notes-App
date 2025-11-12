@@ -1,0 +1,61 @@
+[
+  {
+    "profile_id": "concise_beginner",
+    "name": "Concise Beginner-Friendly",
+    "user_persona": "student",
+    "description": "Plain-language, easy-to-read notes with short examples and clear definitions.",
+    "created_at": "2025-10-26T00:00:00Z",
+    "updated_at": "2025-10-26T00:00:00Z",
+    "tone": {
+      "formality": "neutral",
+      "voice": "active",
+      "use_examples": "high"
+    },
+    "detail": {
+      "complexity_level": "medium",
+      "explain_example": "medium_detail"
+    },
+    "abstraction": {
+      "complexity_level": "beginner",
+      "include_glossary_of_terms": true,
+      "math_verbose": "sparse"
+    },
+    "formatting": {
+      "use_bullets": true,
+      "use_numbered_lists": false,
+      "use_headings": true,
+      "heading_style": "##",
+      "bullet_style": "dash",
+      "max_bullet_length_words": 25,
+      "paragraph_length": "short",
+      "prefer_tables_for_data": false,
+      "emphasize_keywords": "double-quotes"
+    },
+    "structure": {
+      "include_title": true,
+      "include_summary_at_top": true,
+      "summary_style": "three_bullets",
+      "include_key_terms_section": true,
+      "include_examples_section": true,
+      "include_actions_or_todos_at_end": false,
+      "section_order": ["title", "summary", "content", "examples", "key_terms"],
+      "default_section_order": true
+    },
+    "language": {
+      "language": "English",
+      "complexity": "simple",
+      "preferred_level_explain_like": "15",
+      "avoid_jargon": true
+    },
+    "stylistic_devices": {
+      "use_examples": true,
+      "use_metaphors": true,
+      "use_anaologies": true,
+      "use_acronyms_expanded_first": true,
+      "use_abbreviations": false,
+      "show_action_items": true,
+      "highlight_definitions": "italics"
+    },
+    "custom_instruction": "Keep it simple, educational, and beginner-friendly."
+  }
+]

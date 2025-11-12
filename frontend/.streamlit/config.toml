@@ -1,0 +1,16 @@
+[theme]
+primaryColor = "#0066cc"
+backgroundColor = "#ffffff"
+secondaryBackgroundColor = "#f8f9fa"
+textColor = "#1a1a1a"
+font = "sans serif"
+
+[client]
+showErrorDetails = false
+
+[layout]
+initialSidebarState = "expanded"
+maxUploadSize = 200
+
+[logger]
+level = "error"

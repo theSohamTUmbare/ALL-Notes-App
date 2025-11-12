@@ -1,0 +1,16 @@
+streamlit
+chromadb
+sentence-transformers
+google-generativeai
+langchain
+langgraph
+pydantic
+sqlite-utils
+langchain_community
+langchain_experimental
+langchain-core
+ddgs
+keybert 
+yake 
+fastapi
+uvicorn
