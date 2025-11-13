@@ -10,6 +10,7 @@ from state_schema import PipelineState
 
 def ingestion_node(state: PipelineState) -> PipelineState:
     print("---INGESTION NODE---")
+    print(state)
     agent = IngestionAgent(use_semantic=False)
     result = agent.run(state["input_source"])
 
@@ -100,7 +101,8 @@ def style_rewriter_node(state: PipelineState) -> PipelineState:
     result = agent.run(
         concatenated_notes,
         profile_path=state.get("profile_path"),
-        profile_id=state.get("profile_id")
+        profile_id=state.get("profile_id"),
+        profile= state.get("style_profile")
     )
 
     new_state = {
@@ -112,3 +114,8 @@ def style_rewriter_node(state: PipelineState) -> PipelineState:
         "total_score": result["total_score"]
     }
     return new_state
+
+
+## --- Style Learner ---
+
+

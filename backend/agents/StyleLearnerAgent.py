@@ -28,7 +28,7 @@ class StyleLearnerAgent:
         ],
     }
 
-    def __init__(self, api_key: str, model_name: str = "gemini-2.0-flash-lite"):
+    def __init__(self, api_key: str, model_name: str = "gemini-2.5-flash"):
         self.client = genai.Client(api_key=api_key)
         self.model_name = model_name
 
@@ -70,7 +70,9 @@ class StyleLearnerAgent:
     def _construct_prompt(self, features: Dict[str, Any], text: str) -> str:
         return f"""
             You are a precise JSON style learner.
-            Given the features and the note text, output ONLY a valid JSON following this schema:
+            Given the features and the example note text of user, your taks is to fill 
+            learn the general noting style of user from the example note given and fill the style JSON according to the schema below.
+            Output ONLY a valid JSON following this schema:
 
             {{
               "tone": {{

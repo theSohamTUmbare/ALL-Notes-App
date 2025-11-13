@@ -5,6 +5,7 @@ from typing import Dict, Any
 from graph_pipeline import workflow
 from state_schema import PipelineState
 from db.database_manager import add_note, update_note
+from db.chroma_manager import update_note_in_chroma
 
 # Utility for pretty-printing state updates
 def log_step(step_name: str, state: Dict[str, Any]):
@@ -50,6 +51,8 @@ def run_workflow(initial_state: PipelineState) -> PipelineState:
 
         print(f"💾 Note saved in database with ID: {note_id}")
 
+        update_note_in_chroma(note_id, final_state.get("rewritten_notes").split("\n")[0][:50] or "Untitled Note", final_state.get("rewritten_notes") or "")
+        print("Note indexed in Chroma vector store.")
         # Optional: mark as indexed or processed
         update_note(note_id, indexing_status="completed")
 

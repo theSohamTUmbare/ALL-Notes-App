@@ -14,13 +14,13 @@ class StyleRewriterAgent:
         self.client = genai.Client(api_key=api_key)
         self.max_new_tokens = max_new_tokens
 
-    def _load_style_profile(self, profile_path: str, profile_id: str) -> Dict[str, Any]:
-        with open(profile_path, "r") as f:
-            profiles = json.load(f)
-        for p in profiles:
-            if p["profile_id"] == profile_id:
-                return p
-        raise ValueError(f"Profile '{profile_id}' not found in {profile_path}")
+    # def _load_style_profile(self, profile_path: str, profile_id: str) -> Dict[str, Any]:
+    #     with open(profile_path, "r") as f:
+    #         profiles = json.load(f)
+    #     for p in profiles:
+    #         if p["profile_id"] == profile_id:
+    #             return p
+    #     raise ValueError(f"Profile '{profile_id}' not found in {profile_path}")
 
     def _construct_style_prompt(self, profile: Dict[str, Any]) -> str:
         tone = profile["tone"]
@@ -38,26 +38,47 @@ Rewrite the following educational notes according to this style profile:
 {profile['user_persona']}
 
 ### Tone
-Formality: {tone['formality']}, Voice: {tone['voice']}, Example intensity: {tone['use_examples']}
+Formality: {tone.get('formality', 'neutral')}
+Voice: {tone.get('voice', 'active')}
 
 ### Detail & Abstraction
-Complexity: {detail['complexity_level']}, Explain example: {detail['explain_example']},
-Audience: {abstraction['complexity_level']}, Include glossary: {abstraction['include_glossary_of_terms']}
+Detail complexity: {detail.get('complexity_level', 'medium')}
+Example explanation: {detail.get('explain_example', 'medium_detail')}
+Abstraction level: {abstraction.get('complexity_level', 'beginner')}
+Math verbosity: {abstraction.get('math_verbose', 'sparse')}
+Include glossary: {abstraction.get('include_glossary_of_terms', True)}
 
 ### Formatting
-Use bullets: {formatting['use_bullets']}, Headings: {formatting['use_headings']},
-Paragraph length: {formatting['paragraph_length']}, Emphasize keywords: {formatting['emphasize_keywords']}
+Use bullets: {formatting.get('use_bullets', True)}
+Use numbered lists: {formatting.get('use_numbered_lists', False)}
+Use headings: {formatting.get('use_headings', True)}
+Heading style: {formatting.get('heading_style', '##')}
+Max bullet length (words): {formatting.get('max_bullet_length_words', 25)}
+Paragraph length: {formatting.get('paragraph_length', 'short')}
+Prefer tables for data: {formatting.get('prefer_tables_for_data', False)}
 
 ### Structure
-Include summary: {structure['include_summary_at_top']}, Sections: {', '.join(structure['section_order'])}
+Include title: {structure.get('include_title', True)}
+Include summary at top: {structure.get('include_summary_at_top', True)}
+Include examples section: {structure.get('include_examples_section', True)}
+Include actions/todos at end: {structure.get('include_actions_or_todos_at_end', False)}
+Section order: {', '.join(structure.get('section_order', []))}
 
 ### Language
-Language: {lang['language']}, Complexity: {lang['complexity']}, Avoid jargon: {lang['avoid_jargon']}
+Language: {lang.get('language', 'English')}
+Avoid jargon: {lang.get('avoid_jargon', False)}
 
 ### Stylistic Devices
-Use examples: {style['use_examples']}, Use metaphors: {style['use_metaphors']}, Highlight definitions: {style['highlight_definitions']}
+Use examples: {style.get('use_examples', True)}
+Use metaphors: {style.get('use_metaphors', True)}
+Use analogies: {style.get('use_analogies', True)}
+Expand acronyms first: {style.get('use_acronyms_expanded_first', False)}
+Use abbreviations: {style.get('use_abbreviations', False)}
+Show action items: {style.get('show_action_items', False)}
+Highlight definitions: {style.get('highlight_definitions', 'italics')}
 
-Custom Instruction: {profile['custom_instruction']}
+### Custom Instruction
+{profile.get('custom_instruction', '')}
 
 Now rewrite the following notes:
 """
@@ -134,9 +155,9 @@ Now rewrite the text again, incorporating the feedback while keeping factual mea
         return response.text
 
 
-    def run(self, base_notes: str, profile_path: str, profile_id: str,
+    def run(self, base_notes: str, profile_path: str, profile_id: str, profile: Dict[str, Any],
                             max_loops: int = 4, threshold: int = 28) -> str:
-        profile = self._load_style_profile(profile_path, profile_id)
+        # profile = self._load_style_profile(profile_path, profile_id)
         style_prompt = self._construct_style_prompt(profile)
         full_prompt = f"{style_prompt}\n\n### Base Notes:\n{base_notes.strip()}"
 

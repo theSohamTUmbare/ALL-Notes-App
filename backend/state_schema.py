@@ -6,6 +6,7 @@ from langchain_core.runnables import RunnableParallel
 class PipelineState(TypedDict):
     ingestion_status: Optional[str]
     input_source: Optional[Union[str, List[str]]]
+    user_instruction: Optional[str]
     documents: Optional[List[Document]]
     ingestion_meta: Optional[Dict[str, Any]]
     notemaking_status: Optional[str]
@@ -37,3 +38,4 @@ class PipelineState(TypedDict):
     api_key: Optional[str]
     profile_id: Optional[str]
     profile_path: Optional[str]
+    style_profile: Optional[Dict[str, Any]]

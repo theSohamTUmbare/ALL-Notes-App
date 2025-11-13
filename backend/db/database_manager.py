@@ -153,7 +153,6 @@ def _note_row_to_dict(row):
     }
 
 #  STYLE PROFILE CRUD           
-
 def save_style_profiles(style_data: List[Dict[str, Any]]):
     """Replace all style profiles with a new list of JSON profiles."""
     conn = sqlite3.connect(DB_PATH)
