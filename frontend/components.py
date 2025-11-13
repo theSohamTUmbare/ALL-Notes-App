@@ -1,20 +1,44 @@
 import streamlit as st
+import requests
 from datetime import datetime
 
+def format_datetime(dt):
+    """Handle both datetime and string timestamps."""
+    if isinstance(dt, str):
+        try:
+            dt = datetime.strptime(dt, "%Y-%m-%d %H:%M:%S")
+        except ValueError:
+            # fallback if format slightly different
+            return dt
+    return dt.strftime("%b %d, %Y")
+
+# --- Base API URL ---
+API_BASE = "http://localhost:8000"
+
+# ----------------------------- SESSION INIT --------------------------------
 def init_session_state():
     """Initialize session state variables"""
     if 'notes' not in st.session_state:
-        st.session_state.notes = [
-            {
-                'id': 1,
-                'title': 'Welcome to All Notes',
-                'content': 'This is your first note. Click on any note to read or edit it.',
-                'created': datetime.now(),
-                'modified': datetime.now(),
-                'tags': ['welcome'],
-                'attachments': []
-            }
-        ]
+        # Fetch notes from backend
+        try:
+            res = requests.get(f"{API_BASE}/notes")
+            if res.status_code == 200:
+                st.session_state.notes = res.json()
+            else:
+                st.session_state.notes = []
+        except requests.exceptions.ConnectionError:
+            st.warning("⚠️ Backend not reachable — using local fallback notes.")
+            st.session_state.notes = [
+                {
+                    'id': 1,
+                    'title': 'Welcome to All Notes',
+                    'content': 'This is your first note. Click on any note to read or edit it.',
+                    'created': datetime.now().isoformat(),
+                    'modified': datetime.now().isoformat(),
+                    'tags': ['welcome'],
+                    'attachments': []
+                }
+            ]
 
     if 'chat_history' not in st.session_state:
         st.session_state.chat_history = []
@@ -33,56 +57,129 @@ def init_session_state():
     if 'current_note_id' not in st.session_state:
         st.session_state.current_note_id = None
 
-
+# ----------------------------- NOTE FUNCTIONS --------------------------------
 def get_note_by_id(note_id):
-    """Get a note by its ID"""
-    for note in st.session_state.notes:
-        if note['id'] == note_id:
-            return note
+    """Get a note by ID from backend"""
+    try:
+        res = requests.get(f"{API_BASE}/notes/{note_id}")
+        if res.status_code == 200:
+            return res.json()
+    except requests.exceptions.RequestException:
+        st.error("Failed to fetch note from backend.")
     return None
+
+def get_style_profiles():
+    """Fetch and return the active style profile JSON."""
+    try:
+        res = requests.get(f"{API_BASE}/style_profiles/")
+        if res.status_code == 200:
+            profiles = res.json()
+            if profiles:
+                return profiles[0]  # Return first (active) profile
+            else:
+                raise ValueError("No style profiles found in database.")
+        else:
+            raise RuntimeError(f"Backend returned {res.status_code}: {res.text}")
+    except requests.exceptions.RequestException as e:
+        raise ConnectionError(f"Failed to reach backend: {e}")
 
 
 def create_note(title, content, instructions="", attachments=None):
-    """Create a new note"""
+    """Create a new note via pipeline"""
     if attachments is None:
         attachments = []
-
-    new_id = max([n['id'] for n in st.session_state.notes], default=0) + 1
-    new_note = {
-        'id': new_id,
-        'title': title,
-        'content': content,
-        'instructions': instructions,
-        'created': datetime.now(),
-        'modified': datetime.now(),
-        'tags': [],
-        'attachments': attachments
+    
+    # Create pipeline input state
+    state = {
+        "ingestion_status": "pending",
+        "input_source": content,
+        "user_instruction": instructions,
+        "document": None,
+        "ingestion_meta": {"source": "user_input"},
+        "notemaking_status": "pending",
+        "clean_documents": None,
+        "concept_extraction_status": "pending",
+        "documents_with_concepts": None,
+        "concepts": [],
+        "tag_generation_status": "pending",
+        "documents_with_tags": None,
+        "tags": [],
+        "web_search_status": "pending",
+        "documents_with_resources": None,
+        "resources": {},
+        "style_rewrite_status": "pending",
+        "rewritten_notes": "Pending",
+        "evaluation": None,
+        "total_score": None,
+        "user_choice": None,
+        "llm": None,
+        "retriever": None,
+        "index_data": {},
+        "indexing_status": "pending",
+        "user_query": None,
+        "qna_output": {},
+        "user_interest": "AI",
+        "recommendations": None,
+        "api_key": 'AIzaSyAgVyjlgwX89ForZ5l3mTf8dyhRF5EPg0s',
+        "profile_id": None,
+        "profile_path": None,
+        "style_profile": get_style_profiles(),
+        
     }
-    st.session_state.notes.append(new_note)
-    return new_id
+
+    try:
+        res = requests.post(f"{API_BASE}/pipeline/run", json=state)
+        if res.status_code == 200:
+            new_note = res.json()
+            st.session_state.notes.append(new_note)
+            return new_note.get("id", len(st.session_state.notes))
+        else:
+            st.error(f"Pipeline error: {res.text}")
+    except requests.exceptions.RequestException:
+        st.error("Backend not reachable during note creation.")
+    return None
 
 
 def update_note(note_id, **kwargs):
-    """Update a note's properties"""
-    note = get_note_by_id(note_id)
+    """Update a note in session (for now; could be PUT to backend if added)"""
+    note = next((n for n in st.session_state.notes if n['id'] == note_id), None)
     if note:
         note.update(kwargs)
-        note['modified'] = datetime.now()
+        note['updated_at'] = datetime.now().isoformat()
         return True
     return False
 
 
 def delete_note(note_id):
-    """Delete a note"""
-    st.session_state.notes = [n for n in st.session_state.notes if n['id'] != note_id]
+    """Delete a note via backend"""
+    try:
+        res = requests.delete(f"{API_BASE}/notes/{note_id}")
+        if res.status_code == 200:
+            st.session_state.notes = [n for n in st.session_state.notes if n['id'] != note_id]
+            st.success(f"🗑️ Note {note_id} deleted successfully.")
+            return True
+    except requests.exceptions.RequestException:
+        st.error("Failed to delete note — backend unreachable.")
+    return False
 
 
+def refresh_notes():
+    """Reload all notes from backend"""
+    try:
+        res = requests.get(f"{API_BASE}/notes")
+        if res.status_code == 200:
+            st.session_state.notes = res.json()
+    except requests.exceptions.RequestException:
+        st.error("⚠️ Failed to refresh notes from backend.")
+
+
+# ----------------------------- CHAT FUNCTIONS --------------------------------
 def add_chat_message(role, content):
-    """Add a message to chat history"""
+    """Add message locally to chat history"""
     st.session_state.chat_history.append({
         'role': role,
         'content': content,
-        'timestamp': datetime.now()
+        'timestamp': datetime.now().isoformat()
     })
 
 
@@ -91,32 +188,35 @@ def clear_chat_history():
     st.session_state.chat_history = []
 
 
-def format_date(date_obj):
-    """Format date for display"""
-    if isinstance(date_obj, datetime):
-        now = datetime.now()
-        diff = now - date_obj
+# ----------------------------- UTILITIES --------------------------------
+def format_date(date_str):
+    """Format ISO date string for display"""
+    try:
+        date_obj = datetime.fromisoformat(date_str)
+    except Exception:
+        return str(date_str)
 
-        if diff.days == 0:
-            if diff.seconds < 60:
-                return "just now"
-            elif diff.seconds < 3600:
-                mins = diff.seconds // 60
-                return f"{mins}m ago"
-            else:
-                hours = diff.seconds // 3600
-                return f"{hours}h ago"
-        elif diff.days == 1:
-            return "yesterday"
-        elif diff.days < 7:
-            return f"{diff.days}d ago"
+    now = datetime.now()
+    diff = now - date_obj
+
+    if diff.days == 0:
+        if diff.seconds < 60:
+            return "just now"
+        elif diff.seconds < 3600:
+            mins = diff.seconds // 60
+            return f"{mins}m ago"
         else:
-            return date_obj.strftime("%b %d, %Y")
-    return str(date_obj)
+            hours = diff.seconds // 3600
+            return f"{hours}h ago"
+    elif diff.days == 1:
+        return "yesterday"
+    elif diff.days < 7:
+        return f"{diff.days}d ago"
+    return date_obj.strftime("%b %d, %Y")
 
 
 def search_notes(query):
-    """Search notes by title and content"""
+    """Search notes locally"""
     query = query.lower()
     results = []
     for note in st.session_state.notes:
@@ -127,10 +227,11 @@ def search_notes(query):
 
 def get_notes_sorted(sort_by='modified'):
     """Get notes sorted by specified field"""
-    if sort_by == 'modified':
-        return sorted(st.session_state.notes, key=lambda n: n['modified'], reverse=True)
-    elif sort_by == 'created':
-        return sorted(st.session_state.notes, key=lambda n: n['created'], reverse=True)
-    elif sort_by == 'title':
-        return sorted(st.session_state.notes, key=lambda n: n['title'])
-    return st.session_state.notes
+    key_func = lambda n: n.get(sort_by) or ""
+    reverse = sort_by in ['modified', 'created']
+    try:
+        return sorted(st.session_state.notes, key=key_func, reverse=reverse)
+    except Exception:
+        return st.session_state.notes
+    
+    

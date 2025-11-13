@@ -102,11 +102,11 @@ Give the result as a strict JSON object with, output ONLY a valid JSON following
 ### Rewritten Notes:
 {rewritten_text}
 """
-        # response = self.client.models.generate_content(
-        #     model="gemini-2.0-flash-lite",
-        #     contents=eval_prompt
-        # )
-        response = "<SIMULATED API RESPONSE>"
+        response = self.client.models.generate_content(
+            model="gemini-2.0-flash-lite",
+            contents=eval_prompt
+        )
+        # response = "<SIMULATED API RESPONSE>"
 
         raw_text = response.text.strip()
         print(raw_text)
@@ -161,33 +161,33 @@ Now rewrite the text again, incorporating the feedback while keeping factual mea
         style_prompt = self._construct_style_prompt(profile)
         full_prompt = f"{style_prompt}\n\n### Base Notes:\n{base_notes.strip()}"
 
-        # rewritten = self.client.models.generate_content(
-        #     model="gemini-2.0-flash-lite",
-        #     contents=full_prompt
-        # ).text
-        rewritten = "<--SIMULATED REWRITTEN TEXT-->"  # Placeholder for testing
+        rewritten = self.client.models.generate_content(
+            model="gemini-2.0-flash-lite",
+            contents=full_prompt
+        ).text
+        # rewritten = "<--SIMULATED REWRITTEN TEXT-->"  # Placeholder for testing
 
         # Iterative Evaluation Loop
         for i in range(max_loops):
-            # evaluation = self.evaluate_output(rewritten, profile)
+            evaluation = self.evaluate_output(rewritten, profile)
 
-            # total_score = (
-            #     evaluation.get("style_adherence_score", 0)
-            #     + evaluation.get("clarity_score", 0)
-            #     + evaluation.get("coherence_score", 0)
-            # )
+            total_score = (
+                evaluation.get("style_adherence_score", 0)
+                + evaluation.get("clarity_score", 0)
+                + evaluation.get("coherence_score", 0)
+            )
 
-            # feedback = evaluation.get("overall_feedback", "Improve style consistency and clarity.")
+            feedback = evaluation.get("overall_feedback", "Improve style consistency and clarity.")
 
             total_score = 30  # Placeholder for testing
             
-            # print(f"\ Iteration {i+1}")
-            # # print(evaluation)
-            # print(f"Scores → Style: {evaluation.get('style_adherence_score', 0)}, "
-            #       f"Clarity: {evaluation.get('clarity_score', 0)}, "
-            #       f"Coherence: {evaluation.get('coherence_score', 0)}, ")
-            # print(f"Total Score: {total_score}/30")
-            # print(f"Feedback: {feedback}")
+            print(f"\ Iteration {i+1}")
+            # print(evaluation)
+            print(f"Scores → Style: {evaluation.get('style_adherence_score', 0)}, "
+                  f"Clarity: {evaluation.get('clarity_score', 0)}, "
+                  f"Coherence: {evaluation.get('coherence_score', 0)}, ")
+            print(f"Total Score: {total_score}/30")
+            print(f"Feedback: {feedback}")
 
             if total_score >= threshold:
                 print("Quality threshold reached — finalizing output.")
@@ -197,13 +197,13 @@ Now rewrite the text again, incorporating the feedback while keeping factual mea
             print("----------------------------->")
             print("Refining based on feedback...")
             print("----------------------------->")
-            # rewritten = self.refine_output(rewritten, feedback, profile)
+            rewritten = self.refine_output(rewritten, feedback, profile)
 
         return {
             "rewritten_text": rewritten,
-            "evaluation": None,
-            "feedback": None,
-            # "evaluation": evaluation,
-            # "feedback": feedback,
+            # "evaluation": None,
+            # "feedback": None,
+            "evaluation": evaluation,
+            "feedback": feedback,
             "total_score": total_score
         }

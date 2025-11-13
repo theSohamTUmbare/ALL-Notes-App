@@ -46,12 +46,12 @@ class NotemakingAgent:
         )
 
         try:
-            # response = self.client.models.generate_content(
-            #     model=self.model_name,
-            #     contents=full_prompt
-            # )
-            # cleaned_text = response.text.strip()
-            cleaned_text = "SIMULATED CLEANED TEXT"  # Placeholder for actual API call
+            response = self.client.models.generate_content(
+                model=self.model_name,
+                contents=full_prompt
+            )
+            cleaned_text = response.text.strip()
+            # cleaned_text = "SIMULATED CLEANED TEXT"  # Placeholder for actual API call
         except Exception as e:
             print(f"[ERROR] Gemini API call failed: {e}")
             cleaned_text = text  # Fallback: return the pre-cleaned text

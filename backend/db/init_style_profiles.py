@@ -4,6 +4,11 @@ import json
 import sqlite3
 
 DB_PATH = "db/notes.db"
+## if you get this error 
+# conn = sqlite3.connect(DB_PATH)
+        #    ^^^^^^^^^^^^^^^^^^^^^^^^
+# sqlite3.OperationalError: unable to open database file
+#do cd ./backend before 
 
 def insert_default_style_profile():
     default_profile = [

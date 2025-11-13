@@ -39,10 +39,15 @@ def update_note_in_chroma(note_id: int, title: str, content: str):
     vector_store.persist()
     print(f"✅ Indexed note {note_id} ({len(chunks)} chunks) in Chroma.")
 
-def search_notes(query: str, k: int = 3):
+def search_notes(query: str, k: int = 5):
     """Semantic search across all notes"""
     vector_store = get_vector_store()
     results = vector_store.similarity_search(query, k=k)
+    return results
+
+def search_notes_with_scores(query: str, k: int = 3):
+    vector_store = get_vector_store()
+    results = vector_store.similarity_search_with_score(query, k=k)
     return results
 
 def search_within_note(note_id: int, query: str, k: int = 3):
