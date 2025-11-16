@@ -4,7 +4,10 @@ from langchain_experimental.text_splitter import SemanticChunker
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_core.documents import Document
 from typing import Dict, Any, Union, List
+from langchain_community.document_loaders import AsyncChromiumLoader
 import os
+from langchain_community.document_transformers import BeautifulSoupTransformer
+
 
 class IngestionAgent:
     def __init__(self, use_semantic: bool = False, chunk_size: int = 800000, chunk_overlap: int = 8000):
@@ -23,10 +26,21 @@ class IngestionAgent:
 
         for source in sources:
             if isinstance(source, str) and source.startswith("http"):
-                loader = WebBaseLoader(source)
-                docs = loader.load()
-                text = " ".join([d.page_content for d in docs])
-                combined_texts.append(text)
+                try:
+                    # Load full JS-rendered HTML
+                    loader = AsyncChromiumLoader([source])
+                    html_docs = loader.load()
+
+                    # Clean with BeautifulSoup
+                    bs_transformer = BeautifulSoupTransformer()
+                    docs = bs_transformer.transform_documents(html_docs)
+
+                    # Convert text
+                    text = " ".join([d.page_content for d in docs])
+                    combined_texts.append(text)
+
+                except Exception as e:
+                    raise Exception(f"Error loading URL {source}: {e}")
 
             elif str(source).endswith(".pdf"):
                 loader = PyPDFLoader(source)

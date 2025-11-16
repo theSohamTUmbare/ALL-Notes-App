@@ -14,7 +14,7 @@ st.set_page_config(
 
 API_BASE = "http://localhost:8000"
 
-page_header("🎨 Style Profile", "Personalize your All Notes experience")
+page_header("Style Profile", "Personalize your All Notes experience")
 
 
 
@@ -26,10 +26,10 @@ try:
     if res.status_code == 200:
         style_profiles = res.json()
     else:
-        st.error("❌ Failed to fetch style profiles from backend.")
+        st.error("Failed to fetch style profiles from backend.")
         st.stop()
 except requests.exceptions.RequestException:
-    st.error("⚠️ Backend not reachable.")
+    st.error("Backend not reachable.")
     st.stop()
 
 if not style_profiles:
@@ -67,7 +67,7 @@ profile = style_profiles[0]
 # # Convert to DataFrame for display
 # df = pd.DataFrame(editable_rows)
 
-# st.markdown("### 📝 Edit Style Profile")
+# st.markdown("### Edit Style Profile")
 # st.markdown("""
 # Press enter after modifying each cell to register the change.
 # """)
@@ -82,7 +82,7 @@ profile = style_profiles[0]
 # )
 
 # # Save button 
-# if st.button("💾 Save Changes", use_container_width=True, type="primary"):
+# if st.button(" Save Changes", use_container_width=True, type="primary"):
 #     # Apply user edits back into JSON
 #     updated_profile = profile.copy()
 #     for _, row in edited_df.iterrows():
@@ -104,13 +104,13 @@ profile = style_profiles[0]
 #     try:
 #         res = requests.put(f"{API_BASE}/style_profiles/", json=updated_profiles)
 #         if res.status_code == 200:
-#             success_message("✅ Style profile updated successfully!")
+#             success_message("Style profile updated successfully!")
 #         else:
-#             st.error(f"❌ Failed to update profile: {res.text}")
+#             st.error(f" Failed to update profile: {res.text}")
 #     except requests.exceptions.RequestException:
-#         st.error("⚠️ Backend not reachable while saving changes.")
+#         st.error(" Backend not reachable while saving changes.")
 
-st.markdown("### 🧩 Basic Info")
+st.markdown("### Basic Info")
 profile["profile_id"] = st.text_input("Profile ID", value=profile.get("profile_id", ""))
 profile["name"] = st.text_input("Profile Name", value=profile.get("name", ""))
 profile["user_persona"] = st.text_input("User Persona", value=profile.get("user_persona", ""))
@@ -124,9 +124,9 @@ profile["custom_instruction"] = st.text_area(
 st.markdown("---")
 
 # ---------------------------------------------------------------------
-# 🎨 Tone
+#  Tone
 # ---------------------------------------------------------------------
-st.subheader("🎨 Tone")
+st.subheader("Tone")
 tone = profile.get("tone", {})
 col1, col2 = st.columns(2)
 with col1:
@@ -136,9 +136,9 @@ with col2:
 profile["tone"] = tone
 
 # ---------------------------------------------------------------------
-# 📚 Detail
+# Detail
 # ---------------------------------------------------------------------
-st.subheader("📚 Detail")
+st.subheader("Detail")
 detail = profile.get("detail", {})
 col1, col2 = st.columns(2)
 with col1:
@@ -148,9 +148,9 @@ with col2:
 profile["detail"] = detail
 
 # ---------------------------------------------------------------------
-# 🧠 Abstraction
+# Abstraction
 # ---------------------------------------------------------------------
-st.subheader("🧠 Abstraction")
+st.subheader("Abstraction")
 abstraction = profile.get("abstraction", {})
 col1, col2, col3 = st.columns(3)
 with col1:
@@ -162,9 +162,9 @@ with col3:
 profile["abstraction"] = abstraction
 
 # ---------------------------------------------------------------------
-# 🧾 Formatting
+# Formatting
 # ---------------------------------------------------------------------
-st.subheader("🧾 Formatting")
+st.subheader("Formatting")
 fmt = profile.get("formatting", {})
 col1, col2, col3 = st.columns(3)
 with col1:
@@ -180,9 +180,9 @@ fmt["max_bullet_length_words"] = st.number_input("Max Bullet Length (words)", mi
 profile["formatting"] = fmt
 
 # ---------------------------------------------------------------------
-# 🏗️ Structure
+# Structure
 # ---------------------------------------------------------------------
-st.subheader("🏗️ Structure")
+st.subheader("Structure")
 structure = profile.get("structure", {})
 col1, col2, col3 = st.columns(3)
 with col1:
@@ -197,9 +197,9 @@ with col3:
 profile["structure"] = structure
 
 # ---------------------------------------------------------------------
-# 🗣️ Language
+# Language
 # ---------------------------------------------------------------------
-st.subheader("🗣️ Language")
+st.subheader("Language")
 language = profile.get("language", {})
 col1, col2 = st.columns(2)
 with col1:
@@ -209,9 +209,9 @@ with col2:
 profile["language"] = language
 
 # ---------------------------------------------------------------------
-# ✨ Stylistic Devices
+# Stylistic Devices
 # ---------------------------------------------------------------------
-st.subheader("✨ Stylistic Devices")
+st.subheader("Stylistic Devices")
 style_dev = profile.get("stylistic_devices", {})
 col1, col2, col3 = st.columns(3)
 with col1:
@@ -225,22 +225,22 @@ with col3:
 profile["stylistic_devices"] = style_dev
 
 # ---------------------------------------------------------------------
-# 💾 Save to backend
+# Save to backend
 # ---------------------------------------------------------------------
 st.markdown("---")
-if st.button("💾 Save Profile", use_container_width=True, type="primary"):
+if st.button("Save Profile", use_container_width=True, type="primary"):
     try:
         updated_profiles = [profile]
         res = requests.put(f"{API_BASE}/style_profiles/", json=updated_profiles)
         if res.status_code == 200:
-            success_message("✅ Style profile updated successfully!")
+            success_message("Style profile updated successfully!")
         else:
-            st.error(f"❌ Failed to update profile: {res.text}")
+            st.error(f"Failed to update profile: {res.text}")
     except requests.exceptions.RequestException:
-        st.error("⚠️ Backend not reachable while saving changes.")
+        st.error("Backend not reachable while saving changes.")
 
 
-st.markdown("### 🧩 Learn Your Writing Style")
+st.markdown("### Learn Your Writing Style")
 st.markdown("""
 Provide your notes (text or file). The system will analyze your writing and suggest a personalized style profile.
 """)
@@ -248,22 +248,22 @@ Provide your notes (text or file). The system will analyze your writing and sugg
 # --- Inputs ---
 col1, col2 = st.columns(2)
 with col1:
-    user_text = st.text_area("✏️ Paste your text here", height=200, placeholder="Type or paste your notes...")
+    user_text = st.text_area(" Paste your text here", height=200, placeholder="Type or paste your notes...")
 with col2:
-    user_file = st.file_uploader("📄 Or upload a file (PDF/Text)", type=["pdf", "txt"])
+    user_file = st.file_uploader("Or upload a file (PDF/Text)", type=["pdf", "txt"])
 
 
 # --- Button to send data ---
-if st.button("🚀 Learn Style from Notes", use_container_width=True, type="primary"):
+if st.button("Learn Style from Notes", use_container_width=True, type="primary"):
     if not user_text and not user_file:
-        st.warning("⚠️ Please provide text or upload a file first.")
+        st.warning("Please provide text or upload a file first.")
         st.stop()
 
     with st.spinner("Analyzing your writing style..."):
         try:
             files = {}
             data = {
-                "current_profile": json.dumps(profile)  # ✅ serialize dict to JSON string
+                "current_profile": json.dumps(profile)  # serialize dict to JSON string
             }
             if user_text:
                 data["user_text"] = user_text
@@ -274,19 +274,19 @@ if st.button("🚀 Learn Style from Notes", use_container_width=True, type="prim
             print(res.text)
             
             if res.status_code == 200:
-                st.success("✅ New style profile generated successfully!")
+                st.success("New style profile generated successfully!")
                 new_profile = res.json()
                 st.json(new_profile)
             else:
-                st.error(f"❌ Style learning failed: {res.text}")
+                st.error(f"Style learning failed: {res.text}")
         except requests.exceptions.RequestException:
-            st.error("⚠️ Backend not reachable during style learning.")
+            st.error("Backend not reachable during style learning.")
             
 
 
 # st.markdown("""
 # <div style="background: linear-gradient(135deg, #f0f7ff 0%, #ffffff 100%); border-radius: 12px; padding: 15px; margin-bottom: 20px; border-left: 4px solid #0066cc;">
-#     <p style="color: #0066cc; font-size: 0.95rem; margin: 0;"><strong>⚙️ Settings:</strong> Customize your profile and preferences for the best experience.</p>
+#     <p style="color: #0066cc; font-size: 0.95rem; margin: 0;"><strong>Settings:</strong> Customize your profile and preferences for the best experience.</p>
 # </div>
 # """, unsafe_allow_html=True)
 

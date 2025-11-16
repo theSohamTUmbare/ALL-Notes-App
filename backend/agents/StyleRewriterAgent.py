@@ -80,7 +80,7 @@ Highlight definitions: {style.get('highlight_definitions', 'italics')}
 ### Custom Instruction
 {profile.get('custom_instruction', '')}
 
-Now rewrite the following notes:
+Now rewrite the following notes in correct markdown format:
 """
         return prompt.strip()
 
