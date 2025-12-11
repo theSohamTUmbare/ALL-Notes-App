@@ -120,7 +120,7 @@ def create_note(title, content, instructions="", attachments=None):
         "qna_output": {},
         "user_interest": "AI",
         "recommendations": None,
-        "api_key": 'AIzaSyAgVyjlgwX89ForZ5l3mTf8dyhRF5EPg0s',
+        "api_key": 'AI....k',
         "profile_id": None,
         "profile_path": None,
         "style_profile": get_style_profiles(),

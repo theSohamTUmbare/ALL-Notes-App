@@ -134,7 +134,7 @@ Would you like me to show you a visual Precision-Recall curve comparison (with P
         "qna_output": {},
         "user_interest": "AI",
         "recommendations": None,
-        "api_key": 'AIzaSyAgVyjlgwX89ForZ5l3mTf8dyhRF5EPg0s',
+        "api_key": 'AIza...0Lk',
         "profile_id": "concise_beginner",
         "profile_path": 'C:\\Users\\umbar\\OneDrive\\Documents\\Agentic_AI\\ALL Notes Project\\backend\\agents\\style_profile.json',
     }

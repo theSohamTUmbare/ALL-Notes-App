@@ -3,7 +3,7 @@ from google import genai
 from db.chroma_manager import search_notes, search_within_note
 
 router = APIRouter()
-client = genai.Client(api_key="AIzaSyAgVyjlgwX89ForZ5l3mTf8dyhRF5EPg0s")
+client = genai.Client(api_key="AIz...k")
 
 @router.post("/global")
 def chat_global(query: str = Body(..., embed=True)):

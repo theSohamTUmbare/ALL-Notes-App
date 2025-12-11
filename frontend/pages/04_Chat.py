@@ -12,7 +12,6 @@ st.set_page_config(
     layout="wide",
 )
 
-
 API_BASE = "http://localhost:8000"
 
 # ---------- HEADER ----------
@@ -20,7 +19,7 @@ st.markdown("""
     <div style="text-align: center;">
         <h1>💬 Chat Assistant</h1>
         <p style="color: #666;">Ask anything about your notes or explore them intelligently</p>
-    </div>
+    </div>d=
 """, unsafe_allow_html=True)
 
 # ---------- MODE SELECTOR ----------

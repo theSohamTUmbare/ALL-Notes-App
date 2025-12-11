@@ -38,7 +38,7 @@ def extract_pdf_to_markdown(pdf_bytes: bytes) -> str:
                     all_fonts.append(span["size"])
 
     if not all_fonts:
-        return ""  # maybe scanned PDF
+        return ""  
 
     max_size = max(all_fonts)
     h1 = max_size * 0.90
@@ -157,7 +157,7 @@ async def learn_style_from_input(
         raise HTTPException(status_code=400, detail="No text provided for learning")
 
     try:
-        learner = StyleLearnerAgent(api_key="AIzaSyAgVyjlgwX89ForZ5l3mTf8dyhRF5EPg0s")
+        learner = StyleLearnerAgent(api_key="AIz..k")
         learned_json = learner.run(note_text)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Style learner failed: {e}")
