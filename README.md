@@ -1,6 +1,6 @@
-# All Notes Intelligence
+# ALL Notes App
 
-All Notes Intelligence is a full-stack, multi-agent workspace that ingests raw material (text, PDFs, images), distills high-fidelity notes, and rewrites them in a preferred voice while keeping every insight discoverable through semantic search and chat.
+ALL Notes App is a full-stack, multi-agent workspace that ingests raw material (text, PDFs, images), distills high-fidelity notes, and rewrites them in a preferred voice while keeping every insight discoverable through semantic search and chat.
 
 ## Highlights
 
@@ -142,4 +142,5 @@ Refer to [backend/api/routes_pipeline.py](backend/api/routes_pipeline.py) and [b
 ---
 
 Feel free to open issues or submit pull requests that improve agent accuracy, UI ergonomics, or backend resilience.
+
 
