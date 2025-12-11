@@ -101,6 +101,8 @@ python backend/run_pipeline.py
 
 Adapt the `initial_state` payload to point to your data source, API key, and style profile before invoking `run_workflow`.
 
+![](/frontend.png)
+
 ## API Reference
 
 | Method | Endpoint | Purpose |
