@@ -12,7 +12,7 @@ All Notes Intelligence is a full-stack, multi-agent workspace that ingests raw m
 
 ## System Architecture
 
-!(agentic_workflow_diagram)[./agentic_workflow_diagram.png]
+![agentic_workflow_diagram](/agentic_workflow_diagram.png)
 
 ## Tech Stack
 
@@ -142,3 +142,4 @@ Refer to [backend/api/routes_pipeline.py](backend/api/routes_pipeline.py) and [b
 ---
 
 Feel free to open issues or submit pull requests that improve agent accuracy, UI ergonomics, or backend resilience.
+
